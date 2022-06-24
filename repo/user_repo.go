@@ -6,6 +6,7 @@ import (
 	"FinalProjectAssignment/util"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -14,8 +15,9 @@ type UserRepoInterface interface {
 	UserRepoRegister(ctx context.Context, users *model.User) (*model.User, error)
 	UserRepoLogin(ctx context.Context, users *model.User) (*model.User, error)
 	UserCheck(ctx context.Context, users *model.User) (*model.User, error)
-	//UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error)
-	//UserRepoGetId(ctx context.Context, id string) (*model.User, error)
+	UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error)
+	UserRepoDelete(ctx context.Context, users *model.User) (*model.User, error)
+	UserRepoGetId(ctx context.Context, id string) (*model.User, error)
 }
 
 type UserRepo struct {
@@ -78,6 +80,7 @@ func (u *UserRepo) UserRepoLogin(ctx context.Context, users *model.User) (*model
 			&users.Password,
 		); err != nil {
 			fmt.Println("No Data", err)
+			errors.New("No Data")
 		}
 	}
 	fmt.Println("ini login repo:", users)
@@ -98,5 +101,52 @@ func (u *UserRepo) UserCheck(ctx context.Context, users *model.User) (*model.Use
 		}
 	}
 	fmt.Println("ini email repo:", users)
+	return users, nil
+}
+
+func (u *UserRepo) UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error) {
+	sqlSt := `update users set u_email = $1, u_username = $2, u_updated_at = $3 where u_id = $4`
+	res, err := config.Db.Exec(sqlSt,
+		&users.Email,
+		&users.Username,
+		&users.User_id,
+		time.Now(),
+		&users.User_id,
+	)
+	if err != nil {
+		fmt.Errorf("Error Update User: " + err.Error())
+		return nil, err
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		fmt.Errorf("Error Update User: " + err.Error())
+		return nil, err
+	}
+	fmt.Println("updated data : ", count)
+	return users, nil
+}
+
+func (u *UserRepo) UserRepoDelete(ctx context.Context, users *model.User) (*model.User, error) {
+	sqlSt := `delete from users where u_id = $1`
+	res, err := config.Db.Exec(sqlSt, users.User_id)
+	if err != nil {
+		panic(err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Deleted Data : ", count)
+	return users, nil
+}
+
+func (u *UserRepo) UserRepoGetId(ctx context.Context, id string) (*model.User, error) {
+	var users *model.User
+	sqlSt := `Select u_id, u_username, u_email, u_age, u_updated_at where u_id =$1;`
+	row := config.Db.QueryRow(sqlSt, users.User_id)
+	err := row.Scan(&users.User_id, &users.Username, &users.Email, &users.Age, &users.Updated_at)
+	if err != nil {
+		return nil, err
+	}
 	return users, nil
 }

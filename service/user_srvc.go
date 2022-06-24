@@ -10,10 +10,11 @@ import (
 )
 
 type UserServiceInterface interface {
-	//UserGetId(ctx context.Context, id string) (*model.User, error)
 	UserRegister(ctx context.Context, users *model.User) (*model.User, error)
 	UserLogin(ctx context.Context, login *model.UserPostLogin) (*model.User, error)
-	//UserUpdate(ctx context.Context, id string, users *model.User) (*model.User, error)
+	UserGetId(ctx context.Context, id string) (*model.User, error)
+	UserUpdate(ctx context.Context, id string, users *model.User) (*model.User, error)
+	UserDelete(ctx context.Context, id string, users *model.User) (*model.User, error)
 }
 
 type UserService struct {
@@ -108,4 +109,42 @@ func (u *UserService) UserLogin(ctx context.Context, login *model.UserPostLogin)
 	}
 	fmt.Println("service user:", userLogin)
 	return userLogin, nil
+}
+
+func (u *UserService) UserUpdate(ctx context.Context, id string, users *model.User) (*model.User, error) {
+	user_id, err := u.userRepo.UserRepoGetId(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	user_id.Email = users.Email
+	user_id.Username = users.Username
+	user_id.Updated_at = users.Updated_at
+
+	updateUser, err := u.userRepo.UserRepoUpdate(ctx, user_id)
+	if err != nil {
+		return nil, err
+	}
+	return updateUser, nil
+}
+
+func (u *UserService) UserDelete(ctx context.Context, id string, users *model.User) (*model.User, error) {
+	user_id, err := u.userRepo.UserRepoGetId(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	user_id.User_id = users.User_id
+
+	deleteUser, err := u.userRepo.UserRepoDelete(ctx, user_id)
+	if err != nil {
+		return nil, err
+	}
+	return deleteUser, nil
+}
+
+func (u *UserService) UserGetId(ctx context.Context, id string) (*model.User, error) {
+	users_id, err := u.userRepo.UserRepoGetId(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return users_id, nil
 }

@@ -10,7 +10,6 @@ import (
 	"strconv"
 )
 
-type UserHandlerInterface interface{}
 type UserHandler struct {
 	userSrvc service.UserServiceInterface
 }
@@ -57,6 +56,7 @@ func (u *UserHandler) UserRegister(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ini respone", Register_respone)
 	return
 }
+
 func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	var login *model.UserPostLogin
 	err := json.NewDecoder(r.Body).Decode(&login)
@@ -88,5 +88,35 @@ func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ini token :", token)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(token)
+}
+
+func (u *UserHandler) UserUpdate(w http.ResponseWriter, r *http.Request) {
+}
+
+func (u *UserHandler) UserDelete(w http.ResponseWriter, r *http.Request) {
+}
+
+func (u *UserHandler) UserGetId(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var users *model.User
+	id := strconv.Itoa(users.User_id)
+	user_, err := u.userSrvc.UserGetId(ctx, id)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	userUpdate := model.UserUpdateRespone{
+		U_user_id:    user_.User_id,
+		U_username:   user_.Username,
+		U_email:      user_.Email,
+		U_age:        user_.Age,
+		U_Updated_at: user_.Updated_at,
+	}
+	res, _ := json.Marshal(userUpdate)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write(res)
+	return
 
 }

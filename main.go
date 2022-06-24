@@ -21,6 +21,7 @@ import (
 var cfg config.Config
 
 func main() {
+	//database initilization
 	_ = cleanenv.ReadConfig(".env", &cfg)
 	config.Db, config.Err = sql.Open("postgres", ConnectDbPsql(
 		cfg.Db_Host,
@@ -39,12 +40,18 @@ func main() {
 	}
 	fmt.Println("Successfully Connect to Database")
 
+	//interface user
 	userRepo := repo.NewUserRepo(config.Db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserhandler(userService)
+
+	//router
 	r := mux.NewRouter()
+	//middleware use
 	r.Use(middleware.LoginMiddleware)
+	//router connect
 	router.UserRouter(r, userHandler)
+
 	fmt.Println("Now Loading on Port", cfg.PORT)
 	srv := &http.Server{
 		Handler: r,

@@ -53,7 +53,7 @@ func AuthIsAuthorized(next http.Handler) http.Handler {
 }
 
 //find user from context, need middleware to run
-func runContext(ctx context.Context) *model.User {
-	rawData, _ := ctx.Value(ctxKey).(*model.User)
+func runContext(ctx context.Context) model.User {
+	rawData, _ := ctx.Value(ctxKey).(model.User)
 	return rawData
 }
