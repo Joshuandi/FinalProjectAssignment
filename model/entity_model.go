@@ -33,6 +33,12 @@ type UserRegisterRespone struct {
 	R_age      int    `json:"age"`
 }
 
+type UserUpdateInput struct {
+	U_email      string    `json:"email"`
+	U_username   string    `json:"username"`
+	U_Updated_at time.Time `json:"updated_at"`
+}
+
 type UserUpdateRespone struct {
 	U_user_id    int       `json:"user_id"`
 	U_email      string    `json:"email"`
@@ -123,4 +129,8 @@ type SocialMediaUpdateRespone struct {
 	U_Updated_at      time.Time `json:"updated_at"`
 	U_User_id         int       `json:"User_id"`
 	U_User            User      `json:"User"`
+}
+
+type DeleteData struct {
+	Message string `json:"message"`
 }

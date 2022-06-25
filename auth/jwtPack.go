@@ -15,9 +15,10 @@ var cfg config.Config
 func GenerateJWT(user_id string) (string, error) {
 	_ = cleanenv.ReadConfig(".env", &cfg)
 	var JwtKey = []byte(cfg.JwtKey)
+	
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["user_id"] = user_id
+	claims["User_id"] = user_id
 	claims["expired"] = time.Now().Add(time.Hour * 12).Unix()
 
 	tokenString, err := token.SignedString(JwtKey)

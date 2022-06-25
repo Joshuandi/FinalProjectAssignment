@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"FinalProjectAssignment/auth"
+	"FinalProjectAssignment/config"
 	"FinalProjectAssignment/model"
 	"context"
 	"net/http"
@@ -11,49 +12,48 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var ctxKey = &contextKey{"users"}
+var Key = &contextData{"users"}
+var cfg *config.Config
 
-type contextKey struct {
+type contextData struct {
 	data string
 }
 
-func AuthIsAuthorized(next http.Handler) http.Handler {
+//find user from context, need middleware to run
+func RunUser(ctx context.Context) *model.User {
+	rawData, _ := ctx.Value(Key).(*model.User)
+	return rawData
+}
+
+func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		header := r.Header.Get("Authorization")
-		if !strings.Contains(header, "Bearer") {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		authoriHeader := r.Header.Get("Authorization")
+		if !strings.Contains(authoriHeader, "Bearer") {
+			http.Error(w, "Invalid token", http.StatusBadRequest)
 			return
 		}
-
-		tokenString := ""
-		lenToken := strings.Split(header, " ")
-		if len(lenToken) == 2 {
-			tokenString = lenToken[1]
-		}
-
-		tokenc, err := auth.ValidationToken(tokenString)
+		tokenString := strings.Replace(authoriHeader, "Bearer ", "", -1)
+		//fmt.Println("ini token string:", tokenString)
+		tokenValid, err := auth.ValidationToken(tokenString)
+		//fmt.Println("ini token valid:", tokenValid)
 		if err != nil {
-			http.Error(w, "Token UnAuthorized", http.StatusNotAcceptable)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		claims, ok := tokenc.Claims.(jwt.MapClaims)
+		claims, ok := tokenValid.Claims.(jwt.MapClaims)
 		if !ok {
 			http.Error(w, "Token UnAuthorized", http.StatusNotAcceptable)
 			return
 		}
-
-		user_id := claims["id"].(string)
-		id, _ := strconv.Atoi(user_id)
-		users := model.User{User_id: id}
-		ctx := context.WithValue(r.Context(), ctxKey, &users)
+		//fmt.Println("ini claims:", claims)
+		user_id := claims["User_id"].(string)
+		//fmt.Println("ini user_id:", user_id)
+		user_id_, _ := strconv.Atoi(user_id)
+		userss := model.User{User_id: user_id_}
+		//fmt.Println("ini userss middleware:", userss)
+		ctx := context.WithValue(r.Context(), Key, &userss)
+		//fmt.Println("ini ctx middle:", ctx)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
-}
-
-//find user from context, need middleware to run
-func runContext(ctx context.Context) model.User {
-	rawData, _ := ctx.Value(ctxKey).(model.User)
-	return rawData
 }

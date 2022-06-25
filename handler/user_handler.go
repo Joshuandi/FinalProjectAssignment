@@ -2,6 +2,7 @@ package handler
 
 import (
 	"FinalProjectAssignment/auth"
+	"FinalProjectAssignment/middleware"
 	"FinalProjectAssignment/model"
 	"FinalProjectAssignment/service"
 	"encoding/json"
@@ -51,6 +52,7 @@ func (u *UserHandler) UserRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	jsonData, _ := json.Marshal(Register_respone)
 	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(200)
 	w.Write(jsonData)
 
 	fmt.Println("ini respone", Register_respone)
@@ -87,19 +89,74 @@ func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	token.TokenString = validToken
 	fmt.Println("ini token :", token)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(token)
 }
 
 func (u *UserHandler) UserUpdate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	user := middleware.RunUser(ctx)
+	fmt.Println("userid update :", user.User_id)
+
+	var userUp *model.UserUpdateInput
+	json.NewDecoder(r.Body).Decode(&userUp)
+
+	id := strconv.Itoa(user.User_id)
+	fmt.Println("userid update :", id)
+	userUpdate, err := u.userSrvc.UserUpdate(r.Context(), id, &model.UserUpdateInput{
+		U_email:      userUp.U_email,
+		U_username:   userUp.U_username,
+		U_Updated_at: userUp.U_Updated_at,
+	})
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	Update_respone := model.UserUpdateRespone{
+		U_user_id:    user.User_id,
+		U_email:      userUpdate.Email,
+		U_username:   userUpdate.Username,
+		U_age:        userUpdate.Age,
+		U_Updated_at: user.Updated_at,
+	}
+	jsonData, _ := json.Marshal(Update_respone)
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(200)
+	w.Write(jsonData)
+
+	fmt.Println("ini respone", Update_respone)
+	return
 }
 
 func (u *UserHandler) UserDelete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	user := middleware.RunUser(ctx)
+	fmt.Println("userid delete :", user.User_id)
+	id := strconv.Itoa(user.User_id)
+	fmt.Println("userid delete :", id)
+	_, err := u.userSrvc.UserDelete(r.Context(), id, &model.User{
+		User_id: user.User_id,
+	})
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	msg := model.DeleteData{
+		Message: "Your account has been successfully deleted",
+	}
+	w.Write([]byte(msg.Message))
+	return
 }
 
 func (u *UserHandler) UserGetId(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	var users *model.User
-	id := strconv.Itoa(users.User_id)
+	//fmt.Println("user handler", ctx)
+	user := middleware.RunUser(ctx)
+	id := strconv.Itoa(user.User_id)
 	user_, err := u.userSrvc.UserGetId(ctx, id)
 	if err != nil {
 		w.Write([]byte(err.Error()))
@@ -112,11 +169,10 @@ func (u *UserHandler) UserGetId(w http.ResponseWriter, r *http.Request) {
 		U_username:   user_.Username,
 		U_email:      user_.Email,
 		U_age:        user_.Age,
-		U_Updated_at: user_.Updated_at,
+		U_Updated_at: user.Updated_at,
 	}
 	res, _ := json.Marshal(userUpdate)
 	w.Header().Add("Content-Type", "application/json")
 	w.Write(res)
 	return
-
 }

@@ -17,7 +17,7 @@ type UserRepoInterface interface {
 	UserCheck(ctx context.Context, users *model.User) (*model.User, error)
 	UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error)
 	UserRepoDelete(ctx context.Context, users *model.User) (*model.User, error)
-	UserRepoGetId(ctx context.Context, id string) (*model.User, error)
+	UserRepoGetId(ctx context.Context, user_id string) (*model.User, error)
 }
 
 type UserRepo struct {
@@ -35,11 +35,10 @@ func (u *UserRepo) UserRepoRegister(ctx context.Context, users *model.User) (*mo
 		return nil, errHash
 	}
 	users.Password = pass
-	sqlSt := "insert into users (u_username, u_email, u_pass, u_age,u_created_date, u_updated_date)" +
-		"values ($1, $2, $3, $4, $5, $5)" +
-		"returning u_id;"
-
-		//ctx nya tidak bisa
+	sqlSt := `insert into users (u_username, u_email, u_pass, u_age,u_created_date, u_updated_date)
+		values ($1, $2, $3, $4, $5, $5)
+		returning u_id;`
+	//ctx nya tidak bisa
 	rows, err := config.Db.Query(sqlSt,
 		users.Username,
 		users.Email,
@@ -67,8 +66,8 @@ func (u *UserRepo) UserRepoRegister(ctx context.Context, users *model.User) (*mo
 }
 
 func (u *UserRepo) UserRepoLogin(ctx context.Context, users *model.User) (*model.User, error) {
-	sqlSt := "select u_email, u_pass from users"
-	rows, err := config.Db.Query(sqlSt)
+	sqlSt := "select u_id, u_email, u_pass from users where u_email = $1"
+	rows, err := config.Db.Query(sqlSt, users.Email)
 	if err != nil {
 		panic(err)
 	}
@@ -76,6 +75,7 @@ func (u *UserRepo) UserRepoLogin(ctx context.Context, users *model.User) (*model
 	defer rows.Close()
 	for rows.Next() {
 		if err = rows.Scan(
+			&users.User_id,
 			&users.Email,
 			&users.Password,
 		); err != nil {
@@ -105,11 +105,10 @@ func (u *UserRepo) UserCheck(ctx context.Context, users *model.User) (*model.Use
 }
 
 func (u *UserRepo) UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error) {
-	sqlSt := `update users set u_email = $1, u_username = $2, u_updated_at = $3 where u_id = $4`
+	sqlSt := `update users set u_email = $1, u_username = $2, u_updated_date = $3 where u_id = $4`
 	res, err := config.Db.Exec(sqlSt,
 		&users.Email,
 		&users.Username,
-		&users.User_id,
 		time.Now(),
 		&users.User_id,
 	)
@@ -140,13 +139,24 @@ func (u *UserRepo) UserRepoDelete(ctx context.Context, users *model.User) (*mode
 	return users, nil
 }
 
-func (u *UserRepo) UserRepoGetId(ctx context.Context, id string) (*model.User, error) {
-	var users *model.User
-	sqlSt := `Select u_id, u_username, u_email, u_age, u_updated_at where u_id =$1;`
-	row := config.Db.QueryRow(sqlSt, users.User_id)
-	err := row.Scan(&users.User_id, &users.Username, &users.Email, &users.Age, &users.Updated_at)
+func (u *UserRepo) UserRepoGetId(ctx context.Context, user_id string) (*model.User, error) {
+	var users model.User
+	sqlSt := `Select u_id, u_username, u_email, u_age, u_updated_date from users where u_id = $1;`
+	row, err := config.Db.Query(sqlSt, user_id)
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	defer row.Close()
+	for row.Next() {
+		if err = row.Scan(
+			&users.User_id,
+			&users.Username,
+			&users.Email,
+			&users.Age,
+			&users.Updated_at,
+		); err != nil {
+			fmt.Println("No Data", err)
+		}
+	}
+	return &users, nil
 }

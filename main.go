@@ -51,7 +51,6 @@ func main() {
 	r.Use(middleware.LoginMiddleware)
 	//router connect
 	router.UserRouter(r, userHandler)
-
 	fmt.Println("Now Loading on Port", cfg.PORT)
 	srv := &http.Server{
 		Handler: r,

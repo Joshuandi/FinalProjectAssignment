@@ -12,8 +12,8 @@ import (
 type UserServiceInterface interface {
 	UserRegister(ctx context.Context, users *model.User) (*model.User, error)
 	UserLogin(ctx context.Context, login *model.UserPostLogin) (*model.User, error)
-	UserGetId(ctx context.Context, id string) (*model.User, error)
-	UserUpdate(ctx context.Context, id string, users *model.User) (*model.User, error)
+	UserGetId(ctx context.Context, user_id string) (*model.User, error)
+	UserUpdate(ctx context.Context, id string, users *model.UserUpdateInput) (*model.User, error)
 	UserDelete(ctx context.Context, id string, users *model.User) (*model.User, error)
 }
 
@@ -32,8 +32,8 @@ func (u *UserService) UserRegister(ctx context.Context, users *model.User) (*mod
 		Email:    email,
 		Username: username,
 	})
-	fmt.Println("ini login srvc email masuk dari handler:", email)
-	fmt.Println("ini hasil database:", userCheck.Email)
+	// fmt.Println("ini login srvc email masuk dari handler:", email)
+	// fmt.Println("ini hasil database:", userCheck.Email)
 	if email == userCheck.Email {
 		return nil, errors.New("Email already registered")
 	}
@@ -46,8 +46,8 @@ func (u *UserService) UserRegister(ctx context.Context, users *model.User) (*mod
 	if username == "" {
 		return nil, errors.New("Username must be input")
 	}
-	fmt.Println("ini login srvc email masuk dari handler:", username)
-	fmt.Println("ini hasil database:", userCheck.Username)
+	// fmt.Println("ini login srvc email masuk dari handler:", username)
+	// fmt.Println("ini hasil database:", userCheck.Username)
 	if username == userCheck.Username {
 		return nil, errors.New("Username already registered")
 	}
@@ -111,15 +111,23 @@ func (u *UserService) UserLogin(ctx context.Context, login *model.UserPostLogin)
 	return userLogin, nil
 }
 
-func (u *UserService) UserUpdate(ctx context.Context, id string, users *model.User) (*model.User, error) {
+func (u *UserService) UserUpdate(ctx context.Context, id string, users *model.UserUpdateInput) (*model.User, error) {
 	user_id, err := u.userRepo.UserRepoGetId(ctx, id)
+	fmt.Println("UserId : ", user_id)
 	if err != nil {
 		return nil, err
 	}
-	user_id.Email = users.Email
-	user_id.Username = users.Username
-	user_id.Updated_at = users.Updated_at
-
+	if users.U_email == "" {
+		return nil, errors.New(" Email must be input")
+	}
+	if users.U_username == "" {
+		return nil, errors.New(" Username must be input")
+	}
+	user_id.Email = users.U_email
+	user_id.Username = users.U_username
+	user_id.Updated_at = users.U_Updated_at
+	fmt.Println("UserId Email: ", user_id.Email)
+	fmt.Println("UserId Username: ", user_id.Username)
 	updateUser, err := u.userRepo.UserRepoUpdate(ctx, user_id)
 	if err != nil {
 		return nil, err
@@ -141,10 +149,11 @@ func (u *UserService) UserDelete(ctx context.Context, id string, users *model.Us
 	return deleteUser, nil
 }
 
-func (u *UserService) UserGetId(ctx context.Context, id string) (*model.User, error) {
-	users_id, err := u.userRepo.UserRepoGetId(ctx, id)
+func (u *UserService) UserGetId(ctx context.Context, user_id string) (*model.User, error) {
+	users_id, err := u.userRepo.UserRepoGetId(ctx, user_id)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(users_id)
 	return users_id, nil
 }
