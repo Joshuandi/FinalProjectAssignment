@@ -1,4 +1,4 @@
-create table comment(
+create table commentss(
 c_id SERIAL primary key,
 c_message text not null,
 user_id int,

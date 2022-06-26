@@ -50,6 +50,10 @@ func main() {
 	photoService := service.NewPhotoService(photoRepo)
 	photoHandler := handler.NewPhotohandler(photoService)
 
+	//interface comment
+	commentRepo := repo.NewCommentRepo(config.Db)
+	commentService := service.NewCommentService(commentRepo)
+	commentHandler := handler.NewCommenthandler(commentService)
 	//router
 	r := mux.NewRouter()
 	//middleware use
@@ -57,6 +61,7 @@ func main() {
 	//router connect
 	router.UserRouter(r, userHandler)
 	router.PhotoRouter(r, photoHandler)
+	router.CommentRouter(r, commentHandler)
 	fmt.Println("Now Loading on Port", cfg.PORT)
 	srv := &http.Server{
 		Handler: r,

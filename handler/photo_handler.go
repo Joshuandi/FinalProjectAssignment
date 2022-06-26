@@ -62,7 +62,7 @@ func (p *PhotoHandler) PhotoRegister(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ini photo handler : ", Register_respone)
 	jsonData, _ := json.Marshal(Register_respone)
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(201)
 	w.Write(jsonData)
 
 	fmt.Println("ini respone", Register_respone)

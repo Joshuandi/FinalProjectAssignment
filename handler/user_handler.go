@@ -52,7 +52,7 @@ func (u *UserHandler) UserRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	jsonData, _ := json.Marshal(Register_respone)
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(201)
 	w.Write(jsonData)
 
 	fmt.Println("ini respone", Register_respone)

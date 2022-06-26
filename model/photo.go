@@ -49,3 +49,18 @@ type PhotoUpdateRespone struct {
 	U_user_id    int       `json:"User_id"`
 	U_updated_at time.Time `json:"updated_at"`
 }
+
+type PhotoComment struct {
+	Photo_id  int    `json:"id"`
+	Title     string `json:"title"`
+	Caption   string `json:"caption"`
+	Photo_url string `json:"photo_url"`
+	User_id   int    `json:"User_id"`
+}
+
+type PhotoCommentShow struct {
+	Title     string `json:"title"`
+	Caption   string `json:"caption"`
+	Photo_url string `json:"photo_url"`
+	User_id   int    `json:"User_id"`
+}

@@ -51,3 +51,9 @@ type UserUpdateRespone struct {
 	U_age        int       `json:"age"`
 	U_Updated_at time.Time `json:"updated_at"`
 }
+
+type UserComment struct {
+	User_id  int    `json:"id"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+}

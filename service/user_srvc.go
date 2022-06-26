@@ -28,15 +28,16 @@ func NewUserService(userRepo repo.UserRepoInterface) UserServiceInterface {
 func (u *UserService) UserRegister(ctx context.Context, users *model.User) (*model.User, error) {
 	email := users.Email
 	username := users.Username
-	userCheck, err := u.userRepo.UserCheck(ctx, &model.User{
-		Email:    email,
-		Username: username,
-	})
+	//digunakan saat data awal sudah ada untuk check data
+	// userCheck, err := u.userRepo.UserCheck(ctx, &model.User{
+	// 	Email:    email,
+	// 	Username: username,
+	// })
 	// fmt.Println("ini login srvc email masuk dari handler:", email)
 	// fmt.Println("ini hasil database:", userCheck.Email)
-	if email == userCheck.Email {
-		return nil, errors.New("Email already registered")
-	}
+	// if email == userCheck.Email {
+	// 	return nil, errors.New("Email already registered")
+	// }
 	if _, ok := util.ValidateEmail(users.Email); !ok {
 		return nil, errors.New("Email must valid")
 	}
@@ -48,9 +49,11 @@ func (u *UserService) UserRegister(ctx context.Context, users *model.User) (*mod
 	}
 	// fmt.Println("ini login srvc email masuk dari handler:", username)
 	// fmt.Println("ini hasil database:", userCheck.Username)
-	if username == userCheck.Username {
-		return nil, errors.New("Username already registered")
-	}
+
+	//gunakan saat sudah ada user nya
+	// if username == userCheck.Username {
+	// 	return nil, errors.New("Username already registered")
+	// }
 	if users.Password == "" {
 		return nil, errors.New("Password must be input")
 	}

@@ -39,12 +39,9 @@ func (p *PhotoRepo) PhotoRepoRegister(ctx context.Context, photos *model.Photo) 
 	if err != nil {
 		fmt.Println("Query row error")
 	}
-
 	fmt.Println("repo photo:", photos)
-
 	fmt.Println("repo Photo User_id:", photos.User_id)
 	fmt.Println("repo Photo_id:", photos.Photo_id)
-
 	return photos, nil
 }
 

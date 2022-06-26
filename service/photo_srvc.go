@@ -13,7 +13,6 @@ type PhotoServiceInterface interface {
 	PhotoGet(ctx context.Context, id string) ([]*model.PhotoGet, error)
 	PhotoUpdate(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
 	PhotoDelete(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
-	//PhotoGetId(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
 }
 
 type PhotoService struct {
