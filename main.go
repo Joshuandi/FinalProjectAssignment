@@ -45,12 +45,18 @@ func main() {
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserhandler(userService)
 
+	//interface photo
+	photoRepo := repo.NewPhotoRepo(config.Db)
+	photoService := service.NewPhotoService(photoRepo)
+	photoHandler := handler.NewPhotohandler(photoService)
+
 	//router
 	r := mux.NewRouter()
 	//middleware use
 	r.Use(middleware.LoginMiddleware)
 	//router connect
 	router.UserRouter(r, userHandler)
+	router.PhotoRouter(r, photoHandler)
 	fmt.Println("Now Loading on Port", cfg.PORT)
 	srv := &http.Server{
 		Handler: r,

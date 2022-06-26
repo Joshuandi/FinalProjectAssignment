@@ -75,20 +75,20 @@ func (u *UserService) UserRegister(ctx context.Context, users *model.User) (*mod
 func (u *UserService) UserLogin(ctx context.Context, login *model.UserPostLogin) (*model.User, error) {
 	email := login.Email
 	pass := login.Password
-	fmt.Println("ini login srvc email masuk dari handler:", email)
-	fmt.Println("ini login srvc password masuk dari handler:", pass)
+	//fmt.Println("ini login srvc email masuk dari handler:", email)
+	//fmt.Println("ini login srvc password masuk dari handler:", pass)
 	//data tidak ter process ke repo tapi di service muncul
 	userLogin, err := u.userRepo.UserRepoLogin(ctx, &model.User{
 		Email:    email,
 		Password: pass,
 	})
-	fmt.Println("ini login srvc :", userLogin)
+	//fmt.Println("ini login srvc :", userLogin)
 	if err != nil {
 		fmt.Println("Error While Login", err.Error())
 		return nil, err
 	}
-	fmt.Println("ini login email database check :", userLogin.Email)
-	fmt.Println("ini login email input check :", email)
+	//fmt.Println("ini login email database check :", userLogin.Email)
+	//fmt.Println("ini login email input check :", email)
 	if email != userLogin.Email {
 		return nil, errors.New("Email doesnt match")
 	}
@@ -107,7 +107,7 @@ func (u *UserService) UserLogin(ctx context.Context, login *model.UserPostLogin)
 	if !util.CheckHashPassword(pass, userLogin.Password) {
 		return nil, errors.New("Password doesnt match")
 	}
-	fmt.Println("service user:", userLogin)
+	//fmt.Println("service user:", userLogin)
 	return userLogin, nil
 }
 
@@ -126,8 +126,8 @@ func (u *UserService) UserUpdate(ctx context.Context, id string, users *model.Us
 	user_id.Email = users.U_email
 	user_id.Username = users.U_username
 	user_id.Updated_at = users.U_Updated_at
-	fmt.Println("UserId Email: ", user_id.Email)
-	fmt.Println("UserId Username: ", user_id.Username)
+	//fmt.Println("UserId Email: ", user_id.Email)
+	//fmt.Println("UserId Username: ", user_id.Username)
 	updateUser, err := u.userRepo.UserRepoUpdate(ctx, user_id)
 	if err != nil {
 		return nil, err
