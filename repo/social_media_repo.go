@@ -25,14 +25,14 @@ func NewSocialMediaRepo(db *sql.DB) SocialMediaRepoInterface {
 }
 
 func (s *SocialMediaRepo) SocialMediaRepoRegister(ctx context.Context, sm *model.SocialMedia) (*model.SocialMedia, error) {
-	sqlSt := `insert into social_media (sm_name,sm_url,user_id,sm_created_date)
-	values ($1,$2,$3,$4)
+	sqlSt := `insert into social_media (sm_name, sm_url, user_id, sm_created_date)
+	values ($1, $2, $3, $4)
 	returning sm_id;`
 	err := config.Db.QueryRow(sqlSt,
 		sm.Name,
 		sm.SocialMedia_url,
-		time.Now(),
 		sm.User_id,
+		time.Now(),
 	).Scan(&sm.Sm_Id)
 	fmt.Println("ini SocialMedia Repo : ", sm)
 	if err != nil {
