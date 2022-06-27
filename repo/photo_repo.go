@@ -13,7 +13,7 @@ type PhotoRepoInterface interface {
 	PhotoRepoRegister(ctx context.Context, photos *model.Photo) (*model.Photo, error)
 	PhotoRepoUpdate(ctx context.Context, id string, photo *model.Photo) (*model.Photo, error)
 	PhotoRepoDelete(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
-	PhotoRepoGet(ctx context.Context, id string) ([]*model.PhotoGet, error)
+	PhotoRepoGet() ([]*model.PhotoGet, error)
 }
 
 type PhotoRepo struct {
@@ -25,8 +25,8 @@ func NewPhotoRepo(db *sql.DB) PhotoRepoInterface {
 }
 
 func (p *PhotoRepo) PhotoRepoRegister(ctx context.Context, photos *model.Photo) (*model.Photo, error) {
-	sqlSt := `insert into photo (p_title, p_caption, p_url, user_id, p_created_date)
-	values ($1, $2, $3, $4, $5)
+	sqlSt := `insert into photo (p_title, p_caption, p_url, user_id, p_created_date, p_updated_date)
+	values ($1, $2, $3, $4, $5, $5)
 	returning p_id;`
 	err := config.Db.QueryRow(sqlSt,
 		photos.Title,
@@ -37,7 +37,7 @@ func (p *PhotoRepo) PhotoRepoRegister(ctx context.Context, photos *model.Photo) 
 	).Scan(&photos.Photo_id)
 	fmt.Println("ini photo Repo : ", photos)
 	if err != nil {
-		fmt.Println("Query row error")
+		fmt.Println("error scan:", err)
 	}
 	fmt.Println("repo photo:", photos)
 	fmt.Println("repo Photo User_id:", photos.User_id)
@@ -45,7 +45,7 @@ func (p *PhotoRepo) PhotoRepoRegister(ctx context.Context, photos *model.Photo) 
 	return photos, nil
 }
 
-func (p *PhotoRepo) PhotoRepoGet(ctx context.Context, id string) ([]*model.PhotoGet, error) {
+func (p *PhotoRepo) PhotoRepoGet() ([]*model.PhotoGet, error) {
 	sqlSt := `select
 	p.p_id,
 	p.p_title,
@@ -54,12 +54,11 @@ func (p *PhotoRepo) PhotoRepoGet(ctx context.Context, id string) ([]*model.Photo
 	p.user_id,
 	p.p_created_date,
 	p.p_updated_date,
-	u.u_username,
-	u.u_email
-	from photo p left join users u on p.user_id = u.u_id
-	where u.u_id = $1
-	group by p.p_id, u.u_id;`
-	rows, err := config.Db.Query(sqlSt, id)
+	u.u_email,
+	u.u_username
+	from photo p join users u on p.user_id = u.u_id;`
+
+	rows, err := config.Db.Query(sqlSt)
 	if err != nil {
 		fmt.Println("Query row error")
 	}
@@ -77,10 +76,10 @@ func (p *PhotoRepo) PhotoRepoGet(ctx context.Context, id string) ([]*model.Photo
 			&photos.User_id,
 			&photos.Created_at,
 			&photos.Updated_at,
-			&photos.User.Username,
 			&photos.User.Email,
+			&photos.User.Username,
 		); err != nil {
-			fmt.Println("Scan row error")
+			fmt.Println(err)
 		}
 		photo = append(photo, &photos)
 		fmt.Println("ini user email :", photos.User.Email)

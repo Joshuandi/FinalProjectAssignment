@@ -10,7 +10,7 @@ import (
 
 type CommentServiceInterface interface {
 	CommentRegister(ctx context.Context, comments *model.Comment) (*model.Comment, error)
-	CommentGet(ctx context.Context, id string) ([]*model.CommentGet, error)
+	CommentGet(ctx context.Context) ([]*model.CommentGet, error)
 	CommentUpdate(ctx context.Context, id string, comments *model.Comment) (*model.CommentShow, error)
 	CommentDelete(ctx context.Context, id string, comments *model.Comment) (*model.Comment, error)
 }
@@ -39,8 +39,8 @@ func (c *CommentService) CommentRegister(ctx context.Context, comments *model.Co
 	return CommentRegister, nil
 }
 
-func (c *CommentService) CommentGet(ctx context.Context, id string) ([]*model.CommentGet, error) {
-	comment, err := c.CommentRepo.CommentRepoGet(ctx, id)
+func (c *CommentService) CommentGet(ctx context.Context) ([]*model.CommentGet, error) {
+	comment, err := c.CommentRepo.CommentRepoGet(ctx)
 	if err != nil {
 		return nil, err
 	}

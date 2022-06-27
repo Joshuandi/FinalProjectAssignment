@@ -77,9 +77,7 @@ func (s *SocialMediaHandler) SocialMediaGet(w http.ResponseWriter, r *http.Reque
 	userId := middleware.RunUser(ctx)
 
 	fmt.Println("ini SocialMedia handler : ", userId.User_id)
-	//var photos []*model.PhotoGet
-	id := strconv.Itoa(userId.User_id)
-	SocialMedia, err := s.SocialMediaSrvc.SocialMediaGet(r.Context(), id)
+	SocialMedia, err := s.SocialMediaSrvc.SocialMediaGet(r.Context())
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.Header().Add("Content-Type", "application/json")

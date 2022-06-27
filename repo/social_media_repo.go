@@ -13,7 +13,7 @@ type SocialMediaRepoInterface interface {
 	SocialMediaRepoRegister(ctx context.Context, sm *model.SocialMedia) (*model.SocialMedia, error)
 	SocialMediaRepoUpdate(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error)
 	SocialMediaRepoDelete(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error)
-	SocialMediaRepoGet(ctx context.Context, id string) ([]*model.SocialMediaShow, error)
+	SocialMediaRepoGet(ctx context.Context) ([]*model.SocialMediaShow, error)
 }
 
 type SocialMediaRepo struct {
@@ -25,8 +25,8 @@ func NewSocialMediaRepo(db *sql.DB) SocialMediaRepoInterface {
 }
 
 func (s *SocialMediaRepo) SocialMediaRepoRegister(ctx context.Context, sm *model.SocialMedia) (*model.SocialMedia, error) {
-	sqlSt := `insert into social_media (sm_name, sm_url, user_id, sm_created_date)
-	values ($1, $2, $3, $4)
+	sqlSt := `insert into social_media (sm_name, sm_url, user_id, sm_created_date, sm_updated_date)
+	values ($1, $2, $3, $4, $4)
 	returning sm_id;`
 	err := config.Db.QueryRow(sqlSt,
 		sm.Name,
@@ -44,7 +44,7 @@ func (s *SocialMediaRepo) SocialMediaRepoRegister(ctx context.Context, sm *model
 	return sm, nil
 }
 
-func (s *SocialMediaRepo) SocialMediaRepoGet(ctx context.Context, id string) ([]*model.SocialMediaShow, error) {
+func (s *SocialMediaRepo) SocialMediaRepoGet(ctx context.Context) ([]*model.SocialMediaShow, error) {
 	sqlSt := `
 	select
 	sm.sm_id, sm.sm_name, sm.sm_url,
@@ -53,11 +53,10 @@ func (s *SocialMediaRepo) SocialMediaRepoGet(ctx context.Context, id string) ([]
 	sm.sm_updated_date,
 	u.u_id, u.u_username
 	from social_media sm left join users u on sm.user_id = u.u_id
-	where sm.sm_id = $1
 	group by sm.sm_id , u.u_id ;`
-	rows, err := config.Db.Query(sqlSt, id)
+	rows, err := config.Db.Query(sqlSt)
 	if err != nil {
-		fmt.Println("Query row error")
+		fmt.Println("Query row error : ", err)
 	}
 	fmt.Println("ini rows", rows)
 	defer rows.Close()
@@ -76,7 +75,7 @@ func (s *SocialMediaRepo) SocialMediaRepoGet(ctx context.Context, id string) ([]
 			&sm.Social_medias.User.User_id,
 			&sm.Social_medias.User.Username,
 		); err != nil {
-			fmt.Println("Scan row error")
+			fmt.Println("Scan row error : ", err)
 		}
 		socmed = append(socmed, &sm)
 	}

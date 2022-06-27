@@ -70,15 +70,9 @@ func (p *PhotoHandler) PhotoRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *PhotoHandler) PhotoGet(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	ids := params["id"]
-	fmt.Println(ids)
-	ctx := r.Context()
-	userId := middleware.RunUser(ctx)
-	fmt.Println("ini photo handler : ", userId.User_id)
+
 	//var photos []*model.PhotoGet
-	id := strconv.Itoa(userId.User_id)
-	photo, err := p.PhotoSrvc.PhotoGet(ctx, id)
+	photo, err := p.PhotoSrvc.PhotoGet()
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.Header().Add("Content-Type", "application/json")

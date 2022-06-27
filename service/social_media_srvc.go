@@ -10,7 +10,7 @@ import (
 
 type SocialMediaServiceInterface interface {
 	SocialMediaRegister(ctx context.Context, sm *model.SocialMedia) (*model.SocialMedia, error)
-	SocialMediaGet(ctx context.Context, id string) ([]*model.SocialMediaShow, error)
+	SocialMediaGet(ctx context.Context) ([]*model.SocialMediaShow, error)
 	SocialMediaUpdate(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error)
 	SocialMediaDelete(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error)
 }
@@ -43,8 +43,8 @@ func (c *SocialMediaService) SocialMediaRegister(ctx context.Context, sm *model.
 	return SocialMediaRegister, nil
 }
 
-func (c *SocialMediaService) SocialMediaGet(ctx context.Context, id string) ([]*model.SocialMediaShow, error) {
-	SocialMedia, err := c.SocialMediaRepo.SocialMediaRepoGet(ctx, id)
+func (c *SocialMediaService) SocialMediaGet(ctx context.Context) ([]*model.SocialMediaShow, error) {
+	SocialMedia, err := c.SocialMediaRepo.SocialMediaRepoGet(ctx)
 	if err != nil {
 		return nil, err
 	}

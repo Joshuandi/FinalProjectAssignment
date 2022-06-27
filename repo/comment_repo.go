@@ -13,7 +13,7 @@ type CommentRepoInterface interface {
 	CommentRepoRegister(ctx context.Context, comments *model.Comment) (*model.Comment, error)
 	CommentRepoUpdate(ctx context.Context, id string, comments *model.Comment) (*model.CommentShow, error)
 	CommentRepoDelete(ctx context.Context, id string, comments *model.Comment) (*model.Comment, error)
-	CommentRepoGet(ctx context.Context, id string) ([]*model.CommentGet, error)
+	CommentRepoGet(ctx context.Context) ([]*model.CommentGet, error)
 }
 
 type CommentRepo struct {
@@ -25,8 +25,8 @@ func NewCommentRepo(db *sql.DB) CommentRepoInterface {
 }
 
 func (c *CommentRepo) CommentRepoRegister(ctx context.Context, comments *model.Comment) (*model.Comment, error) {
-	sqlSt := `insert into commentss (c_message, photo_id, user_id, c_created_date)
-	values ($1, $2, $3, $4)
+	sqlSt := `insert into commentss (c_message, photo_id, user_id, c_created_date, c_updated_date)
+	values ($1, $2, $3, $4, $4)
 	returning c_id;`
 	err := config.Db.QueryRow(sqlSt,
 		comments.Message,
@@ -44,7 +44,7 @@ func (c *CommentRepo) CommentRepoRegister(ctx context.Context, comments *model.C
 	return comments, nil
 }
 
-func (c *CommentRepo) CommentRepoGet(ctx context.Context, id string) ([]*model.CommentGet, error) {
+func (c *CommentRepo) CommentRepoGet(ctx context.Context) ([]*model.CommentGet, error) {
 	sqlSt := `select
 	c.c_id,
 	c.c_message,
@@ -61,19 +61,17 @@ func (c *CommentRepo) CommentRepoGet(ctx context.Context, id string) ([]*model.C
 	p.p_url,
 	p.user_id
 	from commentss c left join users u on c.user_id = u.u_id left join photo p on c.photo_id = p.p_id
-	where u.u_id = $1
-	group by c.c_idleft join photo p on c.photo_id = p.p_id;`
-	rows, err := config.Db.Query(sqlSt, id)
+	group by c.c_id, u.u_id, p.p_id;`
+	rows, err := config.Db.Query(sqlSt)
 	if err != nil {
-		fmt.Println("Query row error")
+		fmt.Println("Query row error:", err)
 	}
 	fmt.Println("ini rows", rows)
 	defer rows.Close()
 
 	comment := []*model.CommentGet{}
-
+	var comments model.CommentGet
 	for rows.Next() {
-		var comments model.CommentGet
 		if err = rows.Scan(
 			&comments.Comment_id,
 			&comments.Message,
@@ -87,9 +85,10 @@ func (c *CommentRepo) CommentRepoGet(ctx context.Context, id string) ([]*model.C
 			&comments.Photo.Photo_id,
 			&comments.Photo.Title,
 			&comments.Photo.Caption,
+			&comments.Photo.Photo_url,
 			&comments.Photo.User_id,
 		); err != nil {
-			fmt.Println("Scan row error")
+			fmt.Println("scan error:", err)
 		}
 		comment = append(comment, &comments)
 	}

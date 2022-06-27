@@ -10,7 +10,7 @@ import (
 
 type PhotoServiceInterface interface {
 	PhotoRegister(ctx context.Context, photos *model.Photo) (*model.Photo, error)
-	PhotoGet(ctx context.Context, id string) ([]*model.PhotoGet, error)
+	PhotoGet() ([]*model.PhotoGet, error)
 	PhotoUpdate(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
 	PhotoDelete(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error)
 }
@@ -48,8 +48,8 @@ func (p *PhotoService) PhotoRegister(ctx context.Context, photos *model.Photo) (
 	return photoRegister, nil
 }
 
-func (p *PhotoService) PhotoGet(ctx context.Context, id string) ([]*model.PhotoGet, error) {
-	photo, err := p.PhotoRepo.PhotoRepoGet(ctx, id)
+func (p *PhotoService) PhotoGet() ([]*model.PhotoGet, error) {
+	photo, err := p.PhotoRepo.PhotoRepoGet()
 	if err != nil {
 		return nil, err
 	}

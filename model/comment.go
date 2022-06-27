@@ -32,8 +32,8 @@ type CommentGet struct {
 	Message    string       `json:"message"`
 	Photo_id   int          `json:"photo_id"`
 	User_id    int          `json:"user_id"`
-	Created_at time.Time    `json:"created_at"`
 	Updated_at time.Time    `json:"updated_at"`
+	Created_at time.Time    `json:"created_at"`
 	User       UserComment  `json:"User"`
 	Photo      PhotoComment `json:"Photo"`
 }

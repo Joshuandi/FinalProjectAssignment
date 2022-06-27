@@ -77,9 +77,7 @@ func (c *CommentHandler) CommentGet(w http.ResponseWriter, r *http.Request) {
 	userId := middleware.RunUser(ctx)
 
 	fmt.Println("ini comment handler : ", userId.User_id)
-	//var photos []*model.PhotoGet
-	id := strconv.Itoa(userId.User_id)
-	comment, err := c.CommentSrvc.CommentGet(r.Context(), id)
+	comment, err := c.CommentSrvc.CommentGet(r.Context())
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.Header().Add("Content-Type", "application/json")
