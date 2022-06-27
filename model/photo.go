@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Photo struct {
-	Photo_id   int       `json:"photo_id"`
+	Photo_id   int       `json:"id"`
 	Title      string    `json:"title"`
 	Caption    string    `json:"caption"`
 	Photo_url  string    `json:"photo_url"`
@@ -13,7 +13,7 @@ type Photo struct {
 }
 
 type PhotoGet struct {
-	Photo_id   int       `json:"photo_id"`
+	Photo_id   int       `json:"id"`
 	Title      string    `json:"title"`
 	Caption    string    `json:"caption"`
 	Photo_url  string    `json:"photo_url"`
@@ -24,7 +24,7 @@ type PhotoGet struct {
 }
 
 type PhotoUpdateInput struct {
-	U_photo_id   int       `json:"photo_id"`
+	U_photo_id   int       `json:"id"`
 	U_title      string    `json:"title"`
 	U_caption    string    `json:"caption"`
 	U_photo_url  string    `json:"photo_url"`
@@ -33,7 +33,7 @@ type PhotoUpdateInput struct {
 }
 
 type PhotoRegisterRespone struct {
-	R_photo_id   int       `json:"photo_id"`
+	R_photo_id   int       `json:"id"`
 	R_title      string    `json:"title"`
 	R_caption    string    `json:"caption"`
 	R_photo_url  string    `json:"photo_url"`
@@ -42,7 +42,7 @@ type PhotoRegisterRespone struct {
 }
 
 type PhotoUpdateRespone struct {
-	U_photo_id   int       `json:"photo_id"`
+	U_photo_id   int       `json:"id"`
 	U_title      string    `json:"title"`
 	U_caption    string    `json:"caption"`
 	U_photo_url  string    `json:"photo_url"`

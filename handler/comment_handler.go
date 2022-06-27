@@ -151,6 +151,8 @@ func (c *CommentHandler) CommentDelete(w http.ResponseWriter, r *http.Request) {
 		msg := model.DeleteData{
 			Message: "Your comment has been successfully deleted",
 		}
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(200)
 		w.Write([]byte(msg.Message))
 		return
 	}

@@ -111,10 +111,6 @@ func (c *CommentRepo) CommentRepoUpdate(ctx context.Context, id string, comments
 		fmt.Errorf("Error Update Photo: " + err.Error())
 		return nil, err
 	}
-	if err != nil {
-		fmt.Errorf("Error Update Photo: " + err.Error())
-		return nil, err
-	}
 	count, err := res.RowsAffected()
 	if err != nil {
 		fmt.Errorf("Error Update Photo: " + err.Error())

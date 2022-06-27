@@ -3,7 +3,7 @@ package model
 import "time"
 
 type User struct {
-	User_id    int       `json:"user_id"`
+	User_id    int       `json:"id"`
 	Username   string    `json:"username"`
 	Email      string    `json:"email"`
 	Password   string    `json:"password"`
@@ -32,7 +32,7 @@ type UserResT struct {
 }
 
 type UserRegisterRespone struct {
-	R_user_id  int    `json:"user_id"`
+	R_user_id  int    `json:"id"`
 	R_username string `json:"username"`
 	R_email    string `json:"email"`
 	R_age      int    `json:"age"`
@@ -45,7 +45,7 @@ type UserUpdateInput struct {
 }
 
 type UserUpdateRespone struct {
-	U_user_id    int       `json:"user_id"`
+	U_user_id    int       `json:"id"`
 	U_email      string    `json:"email"`
 	U_username   string    `json:"username"`
 	U_age        int       `json:"age"`
@@ -55,5 +55,10 @@ type UserUpdateRespone struct {
 type UserComment struct {
 	User_id  int    `json:"id"`
 	Email    string `json:"email"`
+	Username string `json:"username"`
+}
+
+type UserSocialMedia struct {
+	User_id  int    `json:"id"`
 	Username string `json:"username"`
 }

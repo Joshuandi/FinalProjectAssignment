@@ -29,3 +29,10 @@ func CommentRouter(r *mux.Router, c *handler.CommentHandler) {
 	r.Handle("/comments/{id}", middleware.Authorization(http.HandlerFunc(c.CommentUpdate))).Methods("PUT")
 	r.Handle("/comments/{id}", middleware.Authorization(http.HandlerFunc(c.CommentDelete))).Methods("DELETE")
 }
+
+func Social_MediaRouter(r *mux.Router, sm *handler.SocialMediaHandler) {
+	r.Handle("/socialmedias", middleware.Authorization(http.HandlerFunc(sm.SocialMediaRegister))).Methods("POST")
+	r.Handle("/socialmedias", middleware.Authorization(http.HandlerFunc(sm.SocialMediaGet))).Methods("GET")
+	r.Handle("/socialmedias/{id}", middleware.Authorization(http.HandlerFunc(sm.SocialMediaUpdate))).Methods("PUT")
+	r.Handle("/socialmedias/{id}", middleware.Authorization(http.HandlerFunc(sm.SocialMediaDelete))).Methods("DELETE")
+}

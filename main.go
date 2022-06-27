@@ -54,6 +54,12 @@ func main() {
 	commentRepo := repo.NewCommentRepo(config.Db)
 	commentService := service.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommenthandler(commentService)
+
+	//interface social_media
+	smRepo := repo.NewSocialMediaRepo(config.Db)
+	smService := service.NewSocialMediaService(smRepo)
+	smHandler := handler.NewSocialMediahandler(smService)
+
 	//router
 	r := mux.NewRouter()
 	//middleware use
@@ -62,6 +68,7 @@ func main() {
 	router.UserRouter(r, userHandler)
 	router.PhotoRouter(r, photoHandler)
 	router.CommentRouter(r, commentHandler)
+	router.Social_MediaRouter(r, smHandler)
 	fmt.Println("Now Loading on Port", cfg.PORT)
 	srv := &http.Server{
 		Handler: r,
