@@ -1,0 +1,33 @@
+NOTE:
+
+1. untuk menjalankan code ini harus menyiapkan POSTMAN dan menyesuaikan isian seperti
+    port, router nya dan instruksi pengisian
+2. menggunakan JSON
+
+//json data
+register users
+{
+        "age": 20,
+        "email":"joshuandi003@gmail.com",
+        "password": "Joshuandi003",
+        "username": "Joshuandi003"
+}
+
+register photo
+{
+        "title": "t1",
+        "caption": "c1",
+        "photo_url": "u1"
+}
+
+register comments
+{
+        "message":"m1",
+        "photo_id": 1
+}
+
+register socialmedias
+{
+        "name":"name1",
+        "social_media_url": "sm1"
+}

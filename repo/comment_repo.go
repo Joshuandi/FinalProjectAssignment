@@ -70,8 +70,8 @@ func (c *CommentRepo) CommentRepoGet(ctx context.Context) ([]*model.CommentGet, 
 	defer rows.Close()
 
 	comment := []*model.CommentGet{}
-	var comments model.CommentGet
 	for rows.Next() {
+		var comments model.CommentGet
 		if err = rows.Scan(
 			&comments.Comment_id,
 			&comments.Message,

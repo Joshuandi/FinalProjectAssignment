@@ -36,8 +36,8 @@ type SocialMediaGet struct {
 	Sm_Id           int             `json:"id"`
 	Name            string          `json:"name"`
 	SocialMedia_url string          `json:"social_media_url"`
+	User_id         int             `json:"user_id"`
 	Created_at      time.Time       `json:"created_at"`
 	Updated_at      time.Time       `json:"updated_at"`
-	User_id         int             `json:"id"`
 	User            UserSocialMedia `json:"User"`
 }
