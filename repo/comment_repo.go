@@ -25,13 +25,13 @@ func NewCommentRepo(db *sql.DB) CommentRepoInterface {
 }
 
 func (c *CommentRepo) CommentRepoRegister(ctx context.Context, comments *model.Comment) (*model.Comment, error) {
-	sqlSt := `insert into commentss (c_message, user_id, Comment_id, c_created_date)
+	sqlSt := `insert into commentss (c_message, photo_id, user_id, c_created_date)
 	values ($1, $2, $3, $4)
 	returning c_id;`
 	err := config.Db.QueryRow(sqlSt,
 		comments.Message,
+		comments.Photo_id,
 		comments.User_id,
-		comments.Comment_id,
 		time.Now(),
 	).Scan(&comments.Comment_id)
 	fmt.Println("ini Comment Repo : ", comments)
