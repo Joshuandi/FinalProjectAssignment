@@ -160,3 +160,5 @@ func (u *UserService) UserGetId(ctx context.Context, user_id string) (*model.Use
 	fmt.Println(users_id)
 	return users_id, nil
 }
+
+//

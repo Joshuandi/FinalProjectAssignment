@@ -1,7 +1,7 @@
 package model
 
 import "time"
-
+//
 type SocialMedia struct {
 	Sm_Id           int       `json:"id"`
 	Name            string    `json:"name"`

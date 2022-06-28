@@ -1,7 +1,7 @@
 package model
 
 import "time"
-
+//
 type Comment struct {
 	Comment_id int       `json:"id"`
 	Message    string    `json:"message"`

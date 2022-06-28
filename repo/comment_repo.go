@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+//
 type CommentRepoInterface interface {
 	CommentRepoRegister(ctx context.Context, comments *model.Comment) (*model.Comment, error)
 	CommentRepoUpdate(ctx context.Context, id string, comments *model.Comment) (*model.CommentShow, error)

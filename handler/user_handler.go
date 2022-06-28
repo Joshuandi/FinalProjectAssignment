@@ -14,7 +14,7 @@ import (
 type UserHandler struct {
 	userSrvc service.UserServiceInterface
 }
-
+//
 func NewUserhandler(userSrvc service.UserServiceInterface) *UserHandler {
 	return &UserHandler{userSrvc: userSrvc}
 }

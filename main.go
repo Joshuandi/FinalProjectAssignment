@@ -91,3 +91,4 @@ func ConnectDbPsql(host, user, password, dbname string, port int) string {
 		cfg.Db_Dbname)
 	return psqlInfo
 }
+//

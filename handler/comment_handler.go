@@ -15,7 +15,7 @@ import (
 type CommentHandler struct {
 	CommentSrvc service.CommentServiceInterface
 }
-
+//
 func NewCommenthandler(CommentSrvc service.CommentServiceInterface) *CommentHandler {
 	return &CommentHandler{CommentSrvc: CommentSrvc}
 }

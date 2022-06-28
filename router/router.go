@@ -36,3 +36,4 @@ func Social_MediaRouter(r *mux.Router, sm *handler.SocialMediaHandler) {
 	r.Handle("/socialmedias/{id}", middleware.Authorization(http.HandlerFunc(sm.SocialMediaUpdate))).Methods("PUT")
 	r.Handle("/socialmedias/{id}", middleware.Authorization(http.HandlerFunc(sm.SocialMediaDelete))).Methods("DELETE")
 }
+//

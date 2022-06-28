@@ -89,3 +89,5 @@ func (p *PhotoService) PhotoDelete(ctx context.Context, id string, photos *model
 	}
 	return deleteUser, nil
 }
+
+//

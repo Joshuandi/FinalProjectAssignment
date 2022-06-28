@@ -72,7 +72,7 @@ func (s *SocialMediaHandler) SocialMediaGet(w http.ResponseWriter, r *http.Reque
 	params := mux.Vars(r)
 	ids := params["id"]
 	fmt.Println(ids)
-
+//
 	ctx := r.Context()
 	userId := middleware.RunUser(ctx)
 

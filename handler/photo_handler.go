@@ -15,7 +15,7 @@ import (
 type PhotoHandler struct {
 	PhotoSrvc service.PhotoServiceInterface
 }
-
+//
 func NewPhotohandler(PhotoSrvc service.PhotoServiceInterface) *PhotoHandler {
 	return &PhotoHandler{PhotoSrvc: PhotoSrvc}
 }

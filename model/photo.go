@@ -1,7 +1,7 @@
 package model
 
 import "time"
-
+//
 type Photo struct {
 	Photo_id   int       `json:"id"`
 	Title      string    `json:"title"`

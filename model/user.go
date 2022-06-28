@@ -1,7 +1,7 @@
 package model
 
 import "time"
-
+//
 type User struct {
 	User_id    int       `json:"id"`
 	Username   string    `json:"username"`

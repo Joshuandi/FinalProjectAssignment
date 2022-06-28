@@ -19,6 +19,7 @@ type SocialMediaRepoInterface interface {
 type SocialMediaRepo struct {
 	db *sql.DB
 }
+//
 
 func NewSocialMediaRepo(db *sql.DB) SocialMediaRepoInterface {
 	return &SocialMediaRepo{db: db}
