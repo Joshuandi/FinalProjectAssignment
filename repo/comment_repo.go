@@ -101,16 +101,11 @@ func (c *CommentRepo) CommentRepoGet(ctx context.Context) ([]*model.CommentGet, 
 func (c *CommentRepo) CommentRepoUpdate(ctx context.Context, id string, comments *model.Comment) (*model.CommentShow, error) {
 	sqlSt := `update commentss set c_message = $1, c_updated_date = $2
 	where c_id = $3`
-	res, err := config.Db.Exec(sqlSt,
+	_, err := config.Db.Exec(sqlSt,
 		comments.Message,
 		time.Now(),
 		id,
 	)
-	if err != nil {
-		fmt.Errorf("Error Update Photo: " + err.Error())
-		return nil, err
-	}
-	count, err := res.RowsAffected()
 	if err != nil {
 		fmt.Errorf("Error Update Photo: " + err.Error())
 		return nil, err
@@ -141,20 +136,14 @@ func (c *CommentRepo) CommentRepoUpdate(ctx context.Context, id string, comments
 		fmt.Errorf("Error Update Photo: " + err2.Error())
 		return nil, err2
 	}
-	fmt.Println("updated data : ", count)
 	return &sc, nil
 }
 
 func (c *CommentRepo) CommentRepoDelete(ctx context.Context, id string, comments *model.Comment) (*model.Comment, error) {
 	sqlSt := `delete from commentss where c_id = $1`
-	res, err := config.Db.Exec(sqlSt, id)
+	_, err := config.Db.Exec(sqlSt, id)
 	if err != nil {
 		panic(err)
 	}
-	count, err := res.RowsAffected()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Deleted Data : ", count)
 	return comments, nil
 }

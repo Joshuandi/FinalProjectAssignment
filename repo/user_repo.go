@@ -106,7 +106,7 @@ func (u *UserRepo) UserCheck(ctx context.Context, users *model.User) (*model.Use
 
 func (u *UserRepo) UserRepoUpdate(ctx context.Context, users *model.User) (*model.User, error) {
 	sqlSt := `update users set u_email = $1, u_username = $2, u_updated_date = $3 where u_id = $4`
-	res, err := config.Db.Exec(sqlSt,
+	_, err := config.Db.Exec(sqlSt,
 		&users.Email,
 		&users.Username,
 		time.Now(),
@@ -116,26 +116,15 @@ func (u *UserRepo) UserRepoUpdate(ctx context.Context, users *model.User) (*mode
 		fmt.Errorf("Error Update User: " + err.Error())
 		return nil, err
 	}
-	count, err := res.RowsAffected()
-	if err != nil {
-		fmt.Errorf("Error Update User: " + err.Error())
-		return nil, err
-	}
-	fmt.Println("updated data : ", count)
 	return users, nil
 }
 
 func (u *UserRepo) UserRepoDelete(ctx context.Context, users *model.User) (*model.User, error) {
 	sqlSt := `delete from users where u_id = $1`
-	res, err := config.Db.Exec(sqlSt, users.User_id)
+	_, err := config.Db.Exec(sqlSt, users.User_id)
 	if err != nil {
 		panic(err)
 	}
-	count, err := res.RowsAffected()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Deleted Data : ", count)
 	return users, nil
 }
 

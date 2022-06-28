@@ -87,17 +87,12 @@ func (s *SocialMediaRepo) SocialMediaRepoGet(ctx context.Context) ([]*model.Soci
 func (s *SocialMediaRepo) SocialMediaRepoUpdate(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error) {
 	sqlSt := `update social_media set sm_name = $1, sm_url = $2, sm_updated_date = $3
 	where sm_id = $4`
-	res, err := config.Db.Exec(sqlSt,
+	_, err := config.Db.Exec(sqlSt,
 		sm.Name,
 		sm.SocialMedia_url,
 		time.Now(),
 		id,
 	)
-	if err != nil {
-		fmt.Errorf("Error Update Photo: " + err.Error())
-		return nil, err
-	}
-	count, err := res.RowsAffected()
 	if err != nil {
 		fmt.Errorf("Error Update Photo: " + err.Error())
 		return nil, err
@@ -121,20 +116,14 @@ func (s *SocialMediaRepo) SocialMediaRepoUpdate(ctx context.Context, id string, 
 		fmt.Errorf("Error Update Photo: " + err2.Error())
 		return nil, err2
 	}
-	fmt.Println("updated data : ", count)
 	return &socmed, nil
 }
 
 func (s *SocialMediaRepo) SocialMediaRepoDelete(ctx context.Context, id string, sm *model.SocialMedia) (*model.SocialMedia, error) {
 	sqlSt := `delete from social_media where sm_id = $1`
-	res, err := config.Db.Exec(sqlSt, id)
+	_, err := config.Db.Exec(sqlSt, id)
 	if err != nil {
 		panic(err)
 	}
-	count, err := res.RowsAffected()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Deleted Data : ", count)
 	return sm, nil
 }

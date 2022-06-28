@@ -94,7 +94,7 @@ func (p *PhotoRepo) PhotoRepoGet() ([]*model.PhotoGet, error) {
 func (p *PhotoRepo) PhotoRepoUpdate(ctx context.Context, id string, photo *model.Photo) (*model.Photo, error) {
 	sqlSt := `update photo set p_title = $1, p_caption =$2, p_url =$3, p_updated_date = $4
 	where P_id = $5`
-	res, err := config.Db.Exec(sqlSt,
+	_, err := config.Db.Exec(sqlSt,
 		photo.Title,
 		photo.Caption,
 		photo.Photo_url,
@@ -105,11 +105,6 @@ func (p *PhotoRepo) PhotoRepoUpdate(ctx context.Context, id string, photo *model
 		fmt.Errorf("Error Update Photo: " + err.Error())
 		return nil, err
 	}
-	if err != nil {
-		fmt.Errorf("Error Update Photo: " + err.Error())
-		return nil, err
-	}
-	count, err := res.RowsAffected()
 	if err != nil {
 		fmt.Errorf("Error Update Photo: " + err.Error())
 		return nil, err
@@ -127,20 +122,14 @@ func (p *PhotoRepo) PhotoRepoUpdate(ctx context.Context, id string, photo *model
 		fmt.Errorf("Error Update Photo: " + err2.Error())
 		return nil, err2
 	}
-	fmt.Println("updated data : ", count)
 	return photo, nil
 }
 
 func (p *PhotoRepo) PhotoRepoDelete(ctx context.Context, id string, photos *model.Photo) (*model.Photo, error) {
 	sqlSt := `delete from photo where p_id = $1`
-	res, err := config.Db.Exec(sqlSt, id)
+	_, err := config.Db.Exec(sqlSt, id)
 	if err != nil {
 		panic(err)
 	}
-	count, err := res.RowsAffected()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Deleted Data : ", count)
 	return photos, nil
 }
